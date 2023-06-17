@@ -7,7 +7,7 @@ public class UIControllerGame : MonoBehaviour
 {
 
     public Button buttonPlay;
-    private Board game;
+    private Game _game;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +19,7 @@ public class UIControllerGame : MonoBehaviour
         buttonPlay.clicked += ButtonPlayClicked;
 
         //game = gameObject.AddComponent<Board>();
-        game = GetComponent<Board>();
+        _game = GetComponent<Game>();
     }
 
     // Update is called once per frame
@@ -30,7 +30,7 @@ public class UIControllerGame : MonoBehaviour
     
     private void ButtonPlayClicked()
     {
-        game.StartGame();
+        _game.StartGame();
     }
 
 }

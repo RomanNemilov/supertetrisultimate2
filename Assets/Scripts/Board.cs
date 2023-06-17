@@ -3,22 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Board : MonoBehaviour 
 {
-    public GameObject cube;
+    public GameObject[] cubes;
     public Vector3 WorldPosition { get; private set; }
     public float WorldCellSize { get; private set; }
     public Vector2Int Size { get; private set; }
+    public Game Game { get; private set; }
     public Piece Piece { get; private set; }
     System.Random rnd;
+    private List<GameObject> _renderCubes;
     private int[,] _grid;
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-
-    }
 
     // Update is called once per frame
     private void Update()
@@ -28,34 +25,135 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
-        Size = new Vector2Int(10, 20);
-        _grid = new int[10, 20];
+        Size = new Vector2Int(10, 40);
+        _grid = new int[10, 40];
         WorldPosition = Vector3.zero;
         WorldCellSize = 1;
-        //cube = Resources.Load("Cube") as GameObject;
-        //Piece = gameObject.AddComponent<Piece>();
+        cubes = new GameObject[7];
+        cubes[0] = Resources.Load("Cube_I") as GameObject;
+        cubes[1] = Resources.Load("Cube_O") as GameObject;
+        cubes[2] = Resources.Load("Cube_T") as GameObject;
+        cubes[3] = Resources.Load("Cube_J") as GameObject;
+        cubes[4] = Resources.Load("Cube_L") as GameObject;
+        cubes[5] = Resources.Load("Cube_S") as GameObject;
+        cubes[6] = Resources.Load("Cube_Z") as GameObject;
         Piece = gameObject.GetComponent<Piece>();
+        Game = gameObject.GetComponent<Game>();
         rnd = new System.Random();
+        _renderCubes = new List<GameObject>();
     }
 
-    public void StartGame()
+    public void Set(Piece piece)
     {
-        SpawnPiece();
-        
-
-        //Instantiate(cube, new Vector3(0, 0, 0), Quaternion.identity);
-
-
-
-        Debug.Log("Game started");
-        Debug.Log("First piece: +" + (int)Piece.Tetromino);
+        for (int x = 0; x < Piece.Grid.GetLength(0); x++)
+        {
+            for (int y = 0; y < Piece.Grid.GetLength(1); y++)
+            {
+                if (Piece.Grid[x, y] == 0)
+                {
+                    continue;
+                }
+                _grid[Piece.Position.x + x, Piece.Position.y + y] = Piece.Grid[x, y];
+            }
+        }
+        ClearLines();
+        Render();
     }
 
-    private void SpawnPiece()
+    private void ClearLines()
     {
-        Vector2Int position = new Vector2Int(4, 17);
+        for (int y = 0; y < _grid.GetLength(1);)
+        {
+            if (IsLineFull(y))
+            {
+                LineClear(y);
+            }
+            else
+            {
+                y++;
+            }
+        }
+    }
+
+    private bool IsLineFull(int y)
+    {
+        for (int x = 0; x < _grid.GetLength(0); x++)
+        {
+            if (_grid[x, y] == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void LineClear(int y)
+    {
+        // Clearing the highest row
+        int highestRow = _grid.GetLength(1) - 1;
+        for (int x = 0; x < _grid.GetLength(0); x++)
+        {
+            _grid[x, highestRow] = 0;
+        }
+        // Moving all upper lines to the line to be cleared
+        for (;y < _grid.GetLength(1) - 1; y++)
+        {
+            for (int x = 0; x < _grid.GetLength(0); x++)
+            {
+                _grid[x, y] = _grid[x, y + 1]; 
+            }
+        }
+    }
+
+    public void ClearGrid()
+    {
+        _grid = new int[10, 40];
+        Render();
+    }
+
+    public void Render()
+    {
+        ClearRendered();
+        for (int x = 0; x < _grid.GetLength(0); x++)
+        {
+            for (int y = 0; y < _grid.GetLength(1); y++)
+            {
+                int value = _grid[x, y];
+                if (value == 0)
+                {
+                    continue;
+                }
+                Vector3 worldPosition = new Vector3(x * WorldCellSize,
+                    y * WorldCellSize, 0)
+                    + WorldPosition;
+                //Vector3 worldPosition = Vector3.zero;
+                _renderCubes.Add(Instantiate(cubes[value - 1], worldPosition, Quaternion.identity));
+            }
+        }
+    }
+    public void ClearRendered()
+    {
+        foreach (GameObject cube in _renderCubes)
+        {
+            Destroy(cube);
+        }
+        _renderCubes.Clear();
+    }
+
+    public void SpawnPiece()
+    {
         Tetromino tetromino = (Tetromino)rnd.Next(7);
+        Vector2Int position = new Vector2Int(4, 18);
         Piece.Initialize(this, position, tetromino);
+        if (!Piece.Move(Vector2Int.down))
+        {
+            GameOver();
+        }
+    }
+
+    private void GameOver()
+    {
+        //Piece.Grid = null;
     }
 
     public bool IsValidPosition(int[,] grid, Vector2Int position)
@@ -76,7 +174,7 @@ public class Board : MonoBehaviour
                     return false;
                 }
                 // Ñheking if tile intersects with another tile
-                if (_grid[tilePosition.x, tilePosition.y] == 1)
+                if (_grid[tilePosition.x, tilePosition.y] != 0)
                 {
                     return false;
                 }

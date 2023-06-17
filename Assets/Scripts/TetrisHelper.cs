@@ -89,43 +89,43 @@ public static class TetrisHelper
                 break;
             case Tetromino.O:
                 tetrominoGrid = new int[2, 2] {
-                    {1, 1},
-                    {1, 1},
+                    {2, 2},
+                    {2, 2},
                 };
                 break;
             case Tetromino.T:
                 tetrominoGrid = new int[3, 3] {
-                    { 0, 1, 0},
-                    { 0, 1, 1},
-                    { 0, 1, 0}
+                    { 0, 3, 0},
+                    { 0, 3, 3},
+                    { 0, 3, 0}
                 };
                 break;
             case Tetromino.J:
                 tetrominoGrid = new int[3, 3] {
-                    { 0, 1, 1},
-                    { 0, 1, 0},
-                    { 0, 1, 0}
+                    { 0, 4, 4},
+                    { 0, 4, 0},
+                    { 0, 4, 0}
                 };
                 break;
             case Tetromino.L:
                 tetrominoGrid = new int[3, 3] {
-                    { 0, 1, 0},
-                    { 0, 1, 0},
-                    { 0, 1, 1}
+                    { 0, 5, 0},
+                    { 0, 5, 0},
+                    { 0, 5, 5}
                 };
                 break;
             case Tetromino.S:
                 tetrominoGrid = new int[3, 3] {
-                    { 0, 1, 0},
-                    { 0, 1, 1},
-                    { 0, 0, 1}
+                    { 0, 6, 0},
+                    { 0, 6, 6},
+                    { 0, 0, 6}
                 };
                 break;
             case Tetromino.Z:
                 tetrominoGrid = new int[3, 3] {
-                    { 0, 0, 1},
-                    { 0, 1, 1},
-                    { 0, 1, 0}
+                    { 0, 0, 7},
+                    { 0, 7, 7},
+                    { 0, 7, 0}
                 };
                 break;
             default:
