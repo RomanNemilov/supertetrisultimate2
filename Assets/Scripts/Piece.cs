@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Piece : MonoBehaviour
 {
     public Board Board { get; private set; }
     public int[,] Grid { get; private set; }
     public Vector2Int Position { get; private set; }
+    private Vector2Int GhostPosition { get; set; }
     public Tetromino Tetromino { get; private set; }
     public int Rotation { get; private set; }
     private List<GameObject> _renderCubes;
@@ -71,11 +74,12 @@ public class Piece : MonoBehaviour
 
     public bool Move(Vector2Int translation)
     {
-        Vector2Int newPositon = Position + translation;
-        bool valid = Board.IsValidPosition(Grid, newPositon);
+        Vector2Int newPosition = Position + translation;
+        bool valid = Board.IsValidPosition(Grid, newPosition);
         if (valid)
         {
-            Position = newPositon;
+            Position = newPosition;
+            UpdateGhostPosition();
             _lockTime = 0;
             Render();
         }
@@ -103,6 +107,7 @@ public class Piece : MonoBehaviour
         if (valid) 
         {
             Grid = newGrid;
+            UpdateGhostPosition();
             _lockTime = 0;
             Render();
         }
@@ -125,6 +130,7 @@ public class Piece : MonoBehaviour
         Grid = TetrisHelper.GetTetrominoGrid(tetromino);
         _stepTime = Time.time + stepDelay;
         _lockTime = 0;
+        UpdateGhostPosition();
         Render();
         Debug.Log("Piece initialised: " + tetromino);
     }
@@ -146,6 +152,22 @@ public class Piece : MonoBehaviour
         }
     }
 
+    private void UpdateGhostPosition()
+    {
+        Vector2Int newPosition = Position;
+        while (true)
+        {
+            newPosition += Vector2Int.down;
+            bool valid = Board.IsValidPosition(Grid, newPosition);
+            if (!valid)
+            {
+                GhostPosition = newPosition + Vector2Int.up;
+                return;
+            }
+        }
+
+    }
+
     public void Render()
     {
         ClearRendered();
@@ -158,11 +180,16 @@ public class Piece : MonoBehaviour
                 {
                     continue;
                 }
+                // Rendering main piece block
                 Vector3 worldPosition = new Vector3((x + Position.x) * Board.WorldCellSize, 
                     (y + Position.y) * Board.WorldCellSize, 0) 
                     + Board.WorldPosition;
-                //Vector3 worldPosition = Vector3.zero;
                 _renderCubes.Add(Instantiate(Board.cubes[value - 1], worldPosition, Quaternion.identity));
+                // Rendering ghost piece block
+                Vector3 worldGhostPosition = new Vector3((x + GhostPosition.x) * Board.WorldCellSize,
+                    (y + GhostPosition.y) * Board.WorldCellSize, 0)
+                    + Board.WorldPosition;
+                _renderCubes.Add(Instantiate(Board.cubes[value - 1 + 7], worldGhostPosition, Quaternion.identity));
             }
         }
     }

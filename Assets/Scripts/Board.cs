@@ -29,7 +29,7 @@ public class Board : MonoBehaviour
         _grid = new int[Size.x, Size.y];
         WorldPosition = Vector3.zero;
         WorldCellSize = 1;
-        cubes = new GameObject[7];
+        cubes = new GameObject[14];
         cubes[0] = Resources.Load("Cube_I") as GameObject;
         cubes[1] = Resources.Load("Cube_O") as GameObject;
         cubes[2] = Resources.Load("Cube_T") as GameObject;
@@ -37,6 +37,13 @@ public class Board : MonoBehaviour
         cubes[4] = Resources.Load("Cube_L") as GameObject;
         cubes[5] = Resources.Load("Cube_S") as GameObject;
         cubes[6] = Resources.Load("Cube_Z") as GameObject;
+        cubes[7] = Resources.Load("Cube_I_T") as GameObject;
+        cubes[8] = Resources.Load("Cube_O_T") as GameObject;
+        cubes[9] = Resources.Load("Cube_T_T") as GameObject;
+        cubes[10] = Resources.Load("Cube_J_T") as GameObject;
+        cubes[11] = Resources.Load("Cube_L_T") as GameObject;
+        cubes[12] = Resources.Load("Cube_S_T") as GameObject;
+        cubes[13] = Resources.Load("Cube_Z_T") as GameObject;
         Piece = gameObject.GetComponent<Piece>();
         Game = gameObject.GetComponent<Game>();
         rnd = new System.Random();
