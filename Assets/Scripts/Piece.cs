@@ -72,17 +72,19 @@ public class Piece : MonoBehaviour
     public bool Move(Vector2Int translation)
     {
         Vector2Int newPositon = Position + translation;
-        bool valid = Board.IsValidPosition(this.Grid, newPositon);
+        bool valid = Board.IsValidPosition(Grid, newPositon);
         if (valid)
         {
             Position = newPositon;
             _lockTime = 0;
             Render();
         }
-        if (translation == Vector2Int.down && _lockTime > lockDelay)
-        {
-            Lock();
-        }
+        //else Debug.Log("Failed to move to x:" + newPositon.x + " y: " + newPositon.y);
+        //if (translation == Vector2Int.down && _lockTime > lockDelay)
+        //{
+        //    Debug.Log("Lock due to failed atempt to move down");
+        //    Lock();
+        //}
         return valid;
     }
 
@@ -111,7 +113,7 @@ public class Piece : MonoBehaviour
     private void HardDrop()
     {
         while (Move(Vector2Int.down)) { }
-
+        Debug.Log("Lock due to harddrop");
         Lock();
     }
 
@@ -124,10 +126,12 @@ public class Piece : MonoBehaviour
         _stepTime = Time.time + stepDelay;
         _lockTime = 0;
         Render();
+        Debug.Log("Piece initialised: " + tetromino);
     }
 
     private void Lock()
     {
+        _lockTime = 0;
         Board.Set(this);
         Board.SpawnPiece();
     }

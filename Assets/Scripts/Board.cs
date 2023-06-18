@@ -26,7 +26,7 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         Size = new Vector2Int(10, 40);
-        _grid = new int[10, 40];
+        _grid = new int[Size.x, Size.y];
         WorldPosition = Vector3.zero;
         WorldCellSize = 1;
         cubes = new GameObject[7];
@@ -107,7 +107,7 @@ public class Board : MonoBehaviour
 
     public void ClearGrid()
     {
-        _grid = new int[10, 40];
+        _grid = new int[Size.x, Size.y];
         Render();
     }
 
@@ -171,11 +171,13 @@ public class Board : MonoBehaviour
                 if (tilePosition.x >= Size.x || tilePosition.y >= Size.y ||
                     tilePosition.x < 0 || tilePosition.y < 0)
                 {
+                    Debug.Log("Out of bounds");
                     return false;
                 }
                 // Ñheking if tile intersects with another tile
                 if (_grid[tilePosition.x, tilePosition.y] != 0)
                 {
+                    Debug.Log("Intersection");
                     return false;
                 }
             }
