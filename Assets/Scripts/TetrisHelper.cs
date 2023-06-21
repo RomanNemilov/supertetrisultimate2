@@ -1,10 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class TetrisHelper
 {
+    /// <summary>
+    /// Returns all 7 tetrominos in random order
+    /// </summary>
+    public static List<Tetromino> Get7Tetrominos()
+    {
+        System.Random rnd = new System.Random();
+        List<Tetromino> tetrominos = new List<Tetromino> {Tetromino.I, Tetromino.O,
+        Tetromino.T, Tetromino.J, Tetromino.L, Tetromino.S, Tetromino.Z};
+        List<Tetromino> bag = new List<Tetromino>();
+        while (tetrominos.Count > 0)
+        {
+            int i = rnd.Next(tetrominos.Count);
+            bag.Add(tetrominos[i]);
+            tetrominos.RemoveAt(i);
+        }
+        return bag;
+    }
     public static int[,] RotateMatrixClockwise(int[,] matrix)
     {
         int[,] resultMatrix = (int[,])matrix.Clone();

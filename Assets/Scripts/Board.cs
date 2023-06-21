@@ -7,15 +7,21 @@ using UnityEngine.UIElements;
 
 public class Board : MonoBehaviour 
 {
+    private System.Random rnd;
+    private Queue<Tetromino> _futurePieces;
+    private List<GameObject> _renderCubes;
+    private int[,] _grid;
     public GameObject[] cubes;
     public Vector3 WorldPosition { get; private set; }
     public float WorldCellSize { get; private set; }
     public Vector2Int Size { get; private set; }
+    public Vector2Int VisibleSize { get; private set; }
     public Game Game { get; private set; }
     public Piece Piece { get; private set; }
-    System.Random rnd;
-    private List<GameObject> _renderCubes;
-    private int[,] _grid;
+    public Tetromino NextPiece
+    {
+        get { return _futurePieces.Peek(); }
+    }
 
     // Update is called once per frame
     private void Update()
@@ -26,6 +32,7 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         Size = new Vector2Int(10, 40);
+        VisibleSize = new Vector2Int(10, 20);
         _grid = new int[Size.x, Size.y];
         WorldPosition = Vector3.zero;
         WorldCellSize = 1;
@@ -48,10 +55,13 @@ public class Board : MonoBehaviour
         Game = gameObject.GetComponent<Game>();
         rnd = new System.Random();
         _renderCubes = new List<GameObject>();
+        _futurePieces = new Queue<Tetromino>();
+        AddFuturePieces();
     }
 
-    public void Set(Piece piece)
+    public bool Set(Piece piece)
     {
+        bool visible = false;
         for (int x = 0; x < Piece.Grid.GetLength(0); x++)
         {
             for (int y = 0; y < Piece.Grid.GetLength(1); y++)
@@ -61,10 +71,15 @@ public class Board : MonoBehaviour
                     continue;
                 }
                 _grid[Piece.Position.x + x, Piece.Position.y + y] = Piece.Grid[x, y];
+                if (Piece.Position.x + x < VisibleSize.x && Piece.Position.y + y < VisibleSize.y)
+                {
+                    visible = true;
+                }
             }
         }
         ClearLines();
         Render();
+        return visible;
     }
 
     private void ClearLines()
@@ -121,9 +136,9 @@ public class Board : MonoBehaviour
     public void Render()
     {
         ClearRendered();
-        for (int x = 0; x < _grid.GetLength(0); x++)
+        for (int x = 0; x < VisibleSize.x; x++)
         {
-            for (int y = 0; y < _grid.GetLength(1); y++)
+            for (int y = 0; y < VisibleSize.y; y++)
             {
                 int value = _grid[x, y];
                 if (value == 0)
@@ -149,18 +164,43 @@ public class Board : MonoBehaviour
 
     public void SpawnPiece()
     {
-        Tetromino tetromino = (Tetromino)rnd.Next(7);
-        Vector2Int position = new Vector2Int(4, 18);
+        if (_futurePieces.Count < 7) 
+        {
+            AddFuturePieces();
+        }
+        Tetromino tetromino = _futurePieces.Dequeue();
+        Vector2Int position;
+        switch (tetromino)
+        {
+            case Tetromino.I:
+                position = new Vector2Int(3, 18);
+                break;
+            case Tetromino.O:
+                position = new Vector2Int(4, 20);
+                break;
+            case Tetromino.T:
+            case Tetromino.J:
+            case Tetromino.L:
+            case Tetromino.S:
+            case Tetromino.Z:
+                position = new Vector2Int(3, 19);
+                break;
+            default:
+                position = new Vector2Int(0,0);
+                break;
+        }
         Piece.Initialize(this, position, tetromino);
-        if (!Piece.Move(Vector2Int.down))
+        if (!IsValidPosition(Piece.Grid, Piece.Position))
         {
             GameOver();
         }
+        Debug.Log("Spawned piece: " +  Piece.Tetromino + " Next piece: " + NextPiece);
     }
 
-    private void GameOver()
+    public void GameOver()
     {
-        //Piece.Grid = null;
+        Piece.Stop();
+        Debug.Log("Game over");
     }
 
     public bool IsValidPosition(int[,] grid, Vector2Int position)
@@ -178,17 +218,30 @@ public class Board : MonoBehaviour
                 if (tilePosition.x >= Size.x || tilePosition.y >= Size.y ||
                     tilePosition.x < 0 || tilePosition.y < 0)
                 {
-                    Debug.Log("Out of bounds");
+                    //Debug.Log("Out of bounds");
                     return false;
                 }
                 // Ñheking if tile intersects with another tile
                 if (_grid[tilePosition.x, tilePosition.y] != 0)
                 {
-                    Debug.Log("Intersection");
+                    //Debug.Log("Intersection");
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public void AddFuturePieces()
+    {
+        foreach (Tetromino piece in TetrisHelper.Get7Tetrominos())
+        {
+            _futurePieces.Enqueue(piece);
+        }
+    }
+
+    public void ClearFuturePieces()
+    {
+        _futurePieces.Clear();
     }
 }

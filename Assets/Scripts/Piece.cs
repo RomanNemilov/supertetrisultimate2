@@ -12,30 +12,28 @@ public class Piece : MonoBehaviour
     private Vector2Int GhostPosition { get; set; }
     public Tetromino Tetromino { get; private set; }
     public int Rotation { get; private set; }
+    public bool Active { get; private set; }
     private List<GameObject> _renderCubes;
-    
-    public float stepDelay = 1;
-    public float lockDelay = 0;
+
+    public float stepDelay;
+    public float lockDelay;
 
     private float _stepTime;
     private float _lockTime;
 
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        
-    }
-
     private void Awake()
     {
         _renderCubes = new List<GameObject>();
+        stepDelay = 1;
+        lockDelay = 0;
+        Active = false;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (Grid == null) return;
+        if (!Active) return;
 
         _lockTime += Time.deltaTime;
 
@@ -132,14 +130,26 @@ public class Piece : MonoBehaviour
         _lockTime = 0;
         UpdateGhostPosition();
         Render();
-        Debug.Log("Piece initialised: " + tetromino);
+        Active = true;
+    }
+
+    public void Stop()
+    {
+        Active = false;
     }
 
     private void Lock()
     {
         _lockTime = 0;
-        Board.Set(this);
-        Board.SpawnPiece();
+        if (Board.Set(this))
+        {
+            Board.SpawnPiece();
+        }
+        else
+        {
+            //Game over due to lock out
+            Board.GameOver();
+        }
     }
 
     private void Step()

@@ -14,6 +14,7 @@ public class Game : MonoBehaviour
         LinesCleared = 0;
         Score = 0;
         Board.ClearGrid();
+        Board.ClearFuturePieces();
         Board.SpawnPiece();
         Debug.Log("Game started");
     }
