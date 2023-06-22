@@ -4,9 +4,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static Game;
 
 public class Board : MonoBehaviour 
 {
+    public delegate void scoreEventHandler(int lines);
+    public delegate void gameEventHandler();
+    public event scoreEventHandler LinesCleared;
+    public event gameEventHandler GameOver;
     private System.Random rnd;
     private Queue<Tetromino> _futurePieces;
     private List<GameObject> _renderCubes;
@@ -18,15 +23,10 @@ public class Board : MonoBehaviour
     public Vector2Int VisibleSize { get; private set; }
     public Game Game { get; private set; }
     public Piece Piece { get; private set; }
+    private PiecePreview _piecePreview;
     public Tetromino NextPiece
     {
         get { return _futurePieces.Peek(); }
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
-
     }
 
     private void Awake()
@@ -51,8 +51,9 @@ public class Board : MonoBehaviour
         cubes[11] = Resources.Load("Cube_L_T") as GameObject;
         cubes[12] = Resources.Load("Cube_S_T") as GameObject;
         cubes[13] = Resources.Load("Cube_Z_T") as GameObject;
-        Piece = gameObject.GetComponent<Piece>();
         Game = gameObject.GetComponent<Game>();
+        Piece = gameObject.GetComponent<Piece>();
+        _piecePreview = gameObject.GetComponent<PiecePreview>();
         rnd = new System.Random();
         _renderCubes = new List<GameObject>();
         _futurePieces = new Queue<Tetromino>();
@@ -84,16 +85,22 @@ public class Board : MonoBehaviour
 
     private void ClearLines()
     {
+        int linesCleared = 0;
         for (int y = 0; y < _grid.GetLength(1);)
         {
             if (IsLineFull(y))
             {
                 LineClear(y);
+                linesCleared++;
             }
             else
             {
                 y++;
             }
+        }
+        if (linesCleared > 0)
+        {
+            LinesCleared?.Invoke(linesCleared);
         }
     }
 
@@ -164,7 +171,7 @@ public class Board : MonoBehaviour
 
     public void SpawnPiece()
     {
-        if (_futurePieces.Count < 7) 
+        if (_futurePieces.Count <= 7) 
         {
             AddFuturePieces();
         }
@@ -192,14 +199,16 @@ public class Board : MonoBehaviour
         Piece.Initialize(this, position, tetromino);
         if (!IsValidPosition(Piece.Grid, Piece.Position))
         {
-            GameOver();
+            StopGame();
         }
+        _piecePreview.Render(NextPiece);
         Debug.Log("Spawned piece: " +  Piece.Tetromino + " Next piece: " + NextPiece);
     }
 
-    public void GameOver()
+    public void StopGame()
     {
         Piece.Stop();
+        GameOver?.Invoke();
         Debug.Log("Game over");
     }
 

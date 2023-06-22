@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static Board;
 
 public class Piece : MonoBehaviour
 {
+    public delegate void scoreEventHandler(int lines);
+    public event scoreEventHandler HardDrop;
+    public event scoreEventHandler SoftDrop;
     public Board Board { get; private set; }
     public int[,] Grid { get; private set; }
     public Vector2Int Position { get; private set; }
@@ -14,6 +18,7 @@ public class Piece : MonoBehaviour
     public int Rotation { get; private set; }
     public bool Active { get; private set; }
     private List<GameObject> _renderCubes;
+
 
     public float stepDelay;
     public float lockDelay;
@@ -57,11 +62,14 @@ public class Piece : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            Move(Vector2Int.down);
+            if (Move(Vector2Int.down))
+            {
+                SoftDrop?.Invoke(1);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            HardDrop();
+            Drop();
         }
         if (Time.time >= _stepTime)
         {
@@ -113,11 +121,16 @@ public class Piece : MonoBehaviour
     }
 
 
-    private void HardDrop()
+    private void Drop()
     {
-        while (Move(Vector2Int.down)) { }
+        int lines = 0;
+        while (Move(Vector2Int.down)) 
+        { 
+            lines++;
+        }
         Debug.Log("Lock due to harddrop");
         Lock();
+        HardDrop?.Invoke(lines);
     }
 
     public void Initialize(Board board, Vector2Int position, Tetromino tetromino)
@@ -148,7 +161,7 @@ public class Piece : MonoBehaviour
         else
         {
             //Game over due to lock out
-            Board.GameOver();
+            Board.StopGame();
         }
     }
 
