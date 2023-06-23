@@ -23,7 +23,7 @@
     margin-right: 70px;
     margin-top: 30px;
     margin-bottom: 0;
-    width: 550px;
+    width: auto;
 }
 
 .ButtonStyle:hover {
@@ -51,7 +51,7 @@
     margin-right: 70px;
     margin-top: 30px;
     margin-bottom: 0;
-    width: 550px;
+    width: auto;
 }
 
 .ButtonStyle:active {
@@ -79,5 +79,15 @@
     margin-right: 70px;
     margin-top: 30px;
     margin-bottom: 0;
-    width: 550px;
+    width: auto;
+}
+
+.TextStyle {
+    font-size: 79px;
+    -unity-text-align: middle-left;
+    background-color: rgba(255, 255, 255, 0);
+    color: rgb(255, 255, 255);
+    height: 82px;
+    width: auto;
+    -unity-font: url('project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=3825ad319b462c54a92e45a1e9a6a275&type=3#NotInter-Regular');
 }

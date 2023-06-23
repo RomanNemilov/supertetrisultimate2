@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=74e5dbc9a762549429bc70fc9aac2c55&amp;type=3#Style" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: column;">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 666px; height: auto; align-items: center; justify-content: center; align-self: center; max-height: none; min-height: auto; flex-direction: row;">
+            <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 300px;">
+                <ui:Label tabindex="-1" text="Вы действительно хотите выйти?" display-tooltip-when-elided="true" class="TextStyle" style="font-size: 36px; -unity-text-align: middle-center;" />
+                <ui:Button text="Да" display-tooltip-when-elided="true" name="ButtonYes" class="ButtonStyle" />
+                <ui:Button text="Нет" display-tooltip-when-elided="true" name="ButtonNo" class="ButtonStyle" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

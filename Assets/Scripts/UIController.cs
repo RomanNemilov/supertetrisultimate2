@@ -34,7 +34,6 @@ public class UIController : MonoBehaviour
     }
     private void ButtonExitClicked()
     {
-        Application.Quit();
-        Debug.Log("Game closed");
+        SceneManager.LoadSceneAsync("ConfirmationScene");
     }
 }
