@@ -42,11 +42,11 @@ public class Piece : MonoBehaviour
 
         _lockTime += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             Move(Vector2Int.left);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             Move(Vector2Int.right);
         }
@@ -55,12 +55,12 @@ public class Piece : MonoBehaviour
         {
             Rotate(-1);
         }
-        else if (Input.GetKeyDown(KeyCode.W))
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             Rotate(1);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (Move(Vector2Int.down))
             {

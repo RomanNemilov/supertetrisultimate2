@@ -13,7 +13,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:Button text="Играть" display-tooltip-when-elided="true" name="ButtonStart" class="ButtonStyle" style="margin-top: -3px;" />
-            <ui:Button text="Рекорды" display-tooltip-when-elided="true" name="ButtonHighscores" class="ButtonStyle" />
+            <ui:Button text="Рекорды" display-tooltip-when-elided="true" name="ButtonHighScores" class="ButtonStyle" />
             <ui:Button text="Выйти" display-tooltip-when-elided="true" name="ButtonExit" class="ButtonStyle" />
         </ui:VisualElement>
     </ui:VisualElement>

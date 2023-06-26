@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class TetrisHelper
@@ -23,6 +24,30 @@ public static class TetrisHelper
         }
         return bag;
     }
+
+    public static void SaveHighScores(List<HighScore> highScores)
+    {
+        HighScores highScoresObject = new HighScores() { highScores = highScores };
+        string json = JsonUtility.ToJson(highScoresObject);
+        PlayerPrefs.SetString("highScoreTable", json);
+    }
+
+    public static List<HighScore> GetHighScores() 
+    {
+        List<HighScore> highScores;
+        string json = PlayerPrefs.GetString("highScoreTable");
+        if (json.NullIfEmpty() == null)
+        {
+            highScores = new List<HighScore>();
+            PlayerPrefs.SetString("highScoreTable", json);
+        }
+        else
+        {
+            highScores = JsonUtility.FromJson<HighScores>(json).highScores;
+        }
+        return highScores;
+    }
+
     public static int[,] RotateMatrixClockwise(int[,] matrix)
     {
         int[,] resultMatrix = (int[,])matrix.Clone();

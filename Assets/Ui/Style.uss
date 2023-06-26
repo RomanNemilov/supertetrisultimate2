@@ -91,3 +91,18 @@
     width: auto;
     -unity-font: url('project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=3825ad319b462c54a92e45a1e9a6a275&type=3#NotInter-Regular');
 }
+
+.BorderStyle {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+}

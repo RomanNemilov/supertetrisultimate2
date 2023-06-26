@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=74e5dbc9a762549429bc70fc9aac2c55&amp;type=3#Style" />
+    <ui:VisualElement name="ListEntry" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; height: 40px; min-height: auto; justify-content: space-between; align-self: stretch; padding-left: 10px; padding-right: 10px;">
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="ScoreLabel" class="TextStyle" style="-unity-text-align: middle-left; font-size: 20px; height: auto;" />
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="TimeLabel" class="TextStyle" style="-unity-text-align: middle-right; font-size: 20px; height: auto; white-space: nowrap;" />
+    </ui:VisualElement>
+</ui:UXML>

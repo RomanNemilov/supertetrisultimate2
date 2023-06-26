@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
     public delegate void gameEventHandler();
-    public event gameEventHandler scoreChanged;
+    public event gameEventHandler ScoreChanged;
     public int Level {  get; private set; }
     public int LinesClearedCount { get; private set; }
     public int Score 
@@ -18,19 +21,33 @@ public class Game : MonoBehaviour
         set
         {
             _score = value;
-            scoreChanged?.Invoke();
+            ScoreChanged?.Invoke();
             Debug.Log($"Score changed. New score: {Score}");
         }
     }
     private int _score;
     public Board Board { get; private set; }
     public Piece Piece { get; private set; }
+    private List<HighScore> _highScores;
 
     private void Awake()
     {
         Board = GetComponent<Board>();
         Piece = GetComponent<Piece>();
+
+        //PlayerPrefs.DeleteAll();
+
+        _highScores = TetrisHelper.GetHighScores();
+        // string json = PlayerPrefs.GetString("highScoreTable");
+        // Debug.Log(json + "yo");
+        foreach (HighScore highScore in _highScores)
+        {
+            Debug.Log(highScore.score + " " + highScore.dateTime);
+        }
+        //highScores = JsonUtility.FromJson<HighScores>(PlayerPrefs.GetString("highScoreTabe", "")).highScores;
+
         Board.LinesCleared += LinesCleared;
+        Board.GameOver += GameOverEvent;
         Piece.HardDrop += HardDrop;
         Piece.SoftDrop += SoftDrop;
     }
@@ -44,6 +61,16 @@ public class Game : MonoBehaviour
         Board.ClearFuturePieces();
         Board.SpawnPiece();
         Debug.Log("Game started");
+    }
+
+    public void GameOverEvent()
+    {
+        if (_highScores.Count == 0 || _highScores.Last().score < Score)
+        {
+            _highScores.Add(new HighScore() { score = Score, dateTime = DateTime.Now.ToString()});
+            TetrisHelper.SaveHighScores(_highScores);
+        }
+
     }
 
     public void LinesCleared(int lines)
